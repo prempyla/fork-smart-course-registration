@@ -30,12 +30,15 @@ const menuItems = [
   // === ADMIN MENU ===
   {
     title: "ADMINISTRATION",
-    visible: ["Admin"], // This whole section only shows for admins
+    visible: ["Admin"], 
     items: [
       { icon: "/home.png", label: "Dashboard", href: "/admin", visible: ["Admin"] },
       { icon: "/calendar.png", label: "Manage Terms", href: "/admin/terms", visible: ["Admin"] },
+      { icon: "/subject.png", label: "Manage Departments", href: "/admin/departments", visible: ["Admin"] },
+      { icon: "/subject.png", label: "Manage Programs", href: "/admin/programs", visible: ["Admin"] },
       { icon: "/subject.png", label: "Manage Courses", href: "/admin/courses", visible: ["Admin"] },
       { icon: "/class.png", label: "Manage Sections", href: "/admin/sections", visible: ["Admin"] },
+      { icon: "/class.png", label: "Manage Rooms", href: "/admin/rooms", visible: ["Admin"] },
       { icon: "/teacher.png", label: "Manage Faculty", href: "/admin/faculty", visible: ["Admin"] },
       { icon: "/student.png", label: "Manage Students", href: "/admin/students", visible: ["Admin"] },
       { icon: "/calendar.png", label: "Manage Deadlines", href: "/admin/deadlines", visible: ["Admin"] },

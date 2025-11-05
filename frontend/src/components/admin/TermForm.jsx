@@ -1,67 +1,53 @@
-// This is the form component for creating and editing terms
-// It receives a term prop - if term exists, we're editing; if null, we're creating
-import React, { useState, useEffect } from 'react'
-import { createTerm, updateTerm } from '../../api/terms'
+// form component for creating and editing terms
+import React, {useState,useEffect } from 'react'
+import {createTerm,updateTerm } from '../../api/terms'
 
-const TermForm = ({ term, onClose }) => {
-  // State to store form data (year and semester)
+const TermForm = ({term,onClose }) => {
   const [formData, setFormData] = useState({
     year: '',
     semester: ''
   })
-  // State to track if form is being submitted
-  const [loading, setLoading] = useState(false)
-  // State to store error messages
-  const [error, setError] = useState('')
+  const [loading, setLoading] =useState(false)
+  const [error, setError] =useState('')
 
-  // useEffect runs when component mounts or when 'term' prop changes
-  // If we're editing (term exists), fill the form with existing data
-  useEffect(() => {
-    if (term) {
+  useEffect(()=>{
+    if (term){
       setFormData({
-        year: term.year.toString(), // Convert to string for input field
-        semester: term.semester
+        year:term.year.toString(), 
+        semester:term.semester
       })
-    } else {
-      // If creating new, start with empty form
+    } else{
       setFormData({
-        year: '',
+        year:'',
         semester: ''
       })
     }
   }, [term])
 
-  // Handle input field changes - update formData state
-  const handleChange = (e) => {
-    const { name, value } = e.target
+  const handleChange =(e)=>{
+    const {name,value } = e.target
     setFormData({
-      ...formData, // Keep existing values
-      [name]: value // Update the field that changed
+      ...formData, 
+      [name]: value 
     })
   }
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault() // Prevent page refresh
+  const handleSubmit = async(e)=>{
+    e.preventDefault() 
     setError('')
     setLoading(true)
 
-    try {
-      // Check if we're editing (term exists) or creating (term is null)
-      if (term) {
-        // Update existing term - call API with term ID and new data
+    try{
+      if (term){
         await updateTerm(term.id, formData)
         alert('Term updated successfully!')
-      } else {
-        // Create new term - call API with form data
+      } else{
         await createTerm(formData)
         alert('Term created successfully!')
       }
-      // Close form and refresh list (handled by parent component)
       onClose()
     } catch (err) {
-      // Show error if something went wrong
-      setError(err.message || err.data?.error || 'Failed to save term')
+      setError(err.message ||err.data?.error ||'Failed to save term')
     } finally {
       setLoading(false)
     }

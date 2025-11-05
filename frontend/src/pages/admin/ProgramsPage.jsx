@@ -1,73 +1,61 @@
-// terms management where admin can create,edit,and delete terms
+// Programs management page - shows list of all programs
 import React, { useState, useEffect } from 'react'
-import {getAllTerms,deleteTerm } from '../../api/terms'
-import TermForm from '../../components/admin/TermForm'
+import { getAllPrograms } from '../../api/programs'
+import ProgramForm from '../../components/admin/ProgramForm'
 
-const TermsPage = () => {
-  const [terms, setTerms] =useState([])
-  const [loading, setLoading] =useState(true)
-  const [error, setError] =useState('')
-  const [showForm, setShowForm] =useState(false)
-  const [editingTerm, setEditingTerm] =useState(null)
+const ProgramsPage = () => {
+  const [programs, setPrograms] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [showForm, setShowForm] = useState(false)
+  const [editingProgram, setEditingProgram] = useState(null)
 
   useEffect(() => {
-    loadTerms()
-  },[])
+    loadPrograms()
+  }, [])
 
-  const loadTerms =async()=>{
+  const loadPrograms = async () => {
     try {
       setLoading(true)
       setError('')
-      const data =await getAllTerms()
-      setTerms(data)
+      const data = await getAllPrograms()
+      setPrograms(data)
     } catch (err) {
-      setError(err.message ||'Failed to load terms')
+      setError(err.message || 'Failed to load programs')
     } finally {
       setLoading(false)
     }
   }
 
-  const handleDelete =async(id)=> {
-    if (!window.confirm('Are you sure you want to delete this term?')) {
-      return
-    }
-    try{
-      await deleteTerm(id)
-      loadTerms()
-    } catch (err) {
-      alert(err.message ||'Failed to delete term')
-    }
-  }
-
-  const handleEdit =(term)=> {
-    setEditingTerm(term)
+  const handleEdit = (program) => {
+    setEditingProgram(program)
     setShowForm(true)
   }
 
   const handleCreate = () => {
-    setEditingTerm(null)
+    setEditingProgram(null)
     setShowForm(true)
   }
 
-  const handleFormClose =()=>{
+  const handleFormClose = () => {
     setShowForm(false)
-    setEditingTerm(null)
-    loadTerms()
+    setEditingProgram(null)
+    loadPrograms()
   }
 
-  if (loading){
-    return <div className="p-8">Loading terms...</div>
+  if (loading) {
+    return <div className="p-8">Loading programs...</div>
   }
 
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Manage Terms</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Manage Programs</h1>
         <button
           onClick={handleCreate}
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
         >
-          + Create New Term
+          + Create New Program
         </button>
       </div>
 
@@ -77,15 +65,13 @@ const TermsPage = () => {
         </div>
       )}
 
-      {/* Show form when creating or editing */}
       {showForm && (
-        <TermForm
-          term={editingTerm}
+        <ProgramForm
+          program={editingProgram}
           onClose={handleFormClose}
         />
       )}
 
-      {/* Table showing all terms */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -94,10 +80,10 @@ const TermsPage = () => {
                 ID
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Year
+                Name
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Semester
+                Department
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
@@ -105,37 +91,32 @@ const TermsPage = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {terms.length === 0 ? (
+            {programs.length === 0 ? (
               <tr>
                 <td colSpan="4" className="px-6 py-4 text-center text-gray-500">
-                  No terms found. Create one to get started!
+                  No programs found. Create one to get started!
                 </td>
               </tr>
             ) : (
-              terms.map((term) => (
-                <tr key={term.id}>
+              programs.map((program) => (
+                <tr key={program.id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {term.id}
+                    {program.id}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {term.year}
+                    {program.name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {term.semester}
+                    {program.department?.name || 'N/A'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button
-                      onClick={() => handleEdit(term)}
+                      onClick={() => handleEdit(program)}
                       className="text-blue-600 hover:text-blue-900 mr-4"
                     >
                       Edit
                     </button>
-                    <button
-                      onClick={() => handleDelete(term.id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Delete
-                    </button>
+                    {/* Delete not available - backend doesn't have delete endpoint */}
                   </td>
                 </tr>
               ))
@@ -147,5 +128,5 @@ const TermsPage = () => {
   )
 }
 
-export default TermsPage
+export default ProgramsPage
 

@@ -6,6 +6,11 @@ import StudentDashboard from "./components/dashboard/StudentDashboard";
 import FacultyDashboard from "./components/dashboard/FacultyDashboard";
 import AdminDashboard from "./components/dashboard/AdminDashboard";
 import TermsPage from "./pages/admin/TermsPage";
+import DepartmentsPage from "./pages/admin/DepartmentsPage";
+import CoursesPage from "./pages/admin/CoursesPage";
+import ProgramsPage from "./pages/admin/ProgramsPage";
+import RoomsPage from "./pages/admin/RoomsPage";
+import SectionsPage from "./pages/admin/SectionsPage";
 import Navbar from "./components/common/Navbar";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
@@ -56,9 +61,13 @@ function AppContent() {
         >
           {/* Redirect to terms page by default when visiting /admin */}
           <Route index element={<Navigate to="/admin/terms" replace />} />
-          {/* Nested routes for admin pages */}
+          {/* All admin management pages */}
           <Route path="terms" element={<TermsPage />} />
-          {/* Add more admin routes here as needed */}
+          <Route path="departments" element={<DepartmentsPage />} />
+          <Route path="courses" element={<CoursesPage />} />
+          <Route path="programs" element={<ProgramsPage />} />
+          <Route path="rooms" element={<RoomsPage />} />
+          <Route path="sections" element={<SectionsPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

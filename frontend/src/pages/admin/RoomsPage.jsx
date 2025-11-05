@@ -1,73 +1,74 @@
-// terms management where admin can create,edit,and delete terms
+// Rooms management page - shows list of all rooms
 import React, { useState, useEffect } from 'react'
-import {getAllTerms,deleteTerm } from '../../api/terms'
-import TermForm from '../../components/admin/TermForm'
+import { getAllRooms, deleteRoom } from '../../api/rooms'
+import RoomForm from '../../components/admin/RoomForm'
 
-const TermsPage = () => {
-  const [terms, setTerms] =useState([])
-  const [loading, setLoading] =useState(true)
-  const [error, setError] =useState('')
-  const [showForm, setShowForm] =useState(false)
-  const [editingTerm, setEditingTerm] =useState(null)
+const RoomsPage = () => {
+  const [rooms, setRooms] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [showForm, setShowForm] = useState(false)
+  const [editingRoom, setEditingRoom] = useState(null)
 
   useEffect(() => {
-    loadTerms()
-  },[])
+    loadRooms()
+  }, [])
 
-  const loadTerms =async()=>{
+  const loadRooms = async () => {
     try {
       setLoading(true)
       setError('')
-      const data =await getAllTerms()
-      setTerms(data)
+      const data = await getAllRooms()
+      setRooms(data)
     } catch (err) {
-      setError(err.message ||'Failed to load terms')
+      setError(err.message || 'Failed to load rooms')
     } finally {
       setLoading(false)
     }
   }
 
-  const handleDelete =async(id)=> {
-    if (!window.confirm('Are you sure you want to delete this term?')) {
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this room?')) {
       return
     }
-    try{
-      await deleteTerm(id)
-      loadTerms()
+    
+    try {
+      await deleteRoom(id)
+      loadRooms()
     } catch (err) {
-      alert(err.message ||'Failed to delete term')
+      alert(err.message || err.data?.error || 'Failed to delete room')
     }
   }
 
-  const handleEdit =(term)=> {
-    setEditingTerm(term)
+  const handleEdit = (room) => {
+    setEditingRoom(room)
     setShowForm(true)
   }
 
   const handleCreate = () => {
-    setEditingTerm(null)
+    setEditingRoom(null)
     setShowForm(true)
   }
 
-  const handleFormClose =()=>{
+  const handleFormClose = () => {
     setShowForm(false)
-    setEditingTerm(null)
-    loadTerms()
+    setEditingRoom(null)
+    loadRooms()
   }
 
-  if (loading){
-    return <div className="p-8">Loading terms...</div>
+  if (loading) {
+    return <div className="p-8">Loading rooms...</div>
   }
 
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Manage Terms</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Manage Rooms</h1>
         <button
           onClick={handleCreate}
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
         >
-          + Create New Term
+          + Create New Room
         </button>
       </div>
 
@@ -77,15 +78,13 @@ const TermsPage = () => {
         </div>
       )}
 
-      {/* Show form when creating or editing */}
       {showForm && (
-        <TermForm
-          term={editingTerm}
+        <RoomForm
+          room={editingRoom}
           onClose={handleFormClose}
         />
       )}
 
-      {/* Table showing all terms */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -94,10 +93,7 @@ const TermsPage = () => {
                 ID
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Year
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Semester
+                Room Code
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
@@ -105,33 +101,30 @@ const TermsPage = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {terms.length === 0 ? (
+            {rooms.length === 0 ? (
               <tr>
-                <td colSpan="4" className="px-6 py-4 text-center text-gray-500">
-                  No terms found. Create one to get started!
+                <td colSpan="3" className="px-6 py-4 text-center text-gray-500">
+                  No rooms found. Create one to get started!
                 </td>
               </tr>
             ) : (
-              terms.map((term) => (
-                <tr key={term.id}>
+              rooms.map((room) => (
+                <tr key={room.id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {term.id}
+                    {room.id}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {term.year}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {term.semester}
+                    {room.roomCode}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button
-                      onClick={() => handleEdit(term)}
+                      onClick={() => handleEdit(room)}
                       className="text-blue-600 hover:text-blue-900 mr-4"
                     >
                       Edit
                     </button>
                     <button
-                      onClick={() => handleDelete(term.id)}
+                      onClick={() => handleDelete(room.id)}
                       className="text-red-600 hover:text-red-900"
                     >
                       Delete
@@ -147,5 +140,5 @@ const TermsPage = () => {
   )
 }
 
-export default TermsPage
+export default RoomsPage
 
