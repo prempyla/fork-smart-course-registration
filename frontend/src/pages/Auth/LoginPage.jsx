@@ -45,10 +45,10 @@ const LoginPage = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-4xl overflow-hidden rounded-2xl flex bg-white shadow-xl h-[600px]"
+          className="w-full max-w-4xl overflow-hidden rounded-2xl flex bg-white shadow-xl max-h-[90vh]"
         >
           {/* Left side - Map */}
-          <div className="hidden md:block w-1/2 h-full relative overflow-hidden border-r border-gray-100">
+          <div className="hidden md:flex w-1/2 min-h-[500px] relative overflow-hidden border-r border-gray-100">
             <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-100">
               <DotMap />
 
@@ -85,16 +85,16 @@ const LoginPage = () => {
           </div>
 
           {/* Right side - Sign In Form */}
-          <div className="w-full md:w-1/2 p-8 md:p-10 flex flex-col justify-center bg-white">
+          <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-start bg-white overflow-y-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="text-2xl md:text-3xl font-bold mb-1 text-gray-800">Welcome back</h1>
-              <p className="text-gray-500 mb-8">Sign in to your account</p>
+              <h1 className="text-xl md:text-2xl font-bold mb-1 text-gray-800">Welcome back</h1>
+              <p className="text-gray-500 mb-4 text-sm">Sign in to your account</p>
 
-              <form className="space-y-5" onSubmit={handleSubmit}>
+              <form className="space-y-4" onSubmit={handleSubmit}>
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                     Email <span className="text-blue-500">*</span>
@@ -179,6 +179,43 @@ const LoginPage = () => {
                     </Link>
                   </p>
                 </div>
+
+                {/* Test Credentials Section */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.5 }}
+                  className="mt-8 pt-6 border-t border-gray-200"
+                >
+                  <p className="text-xs text-center text-gray-500 mb-4 font-medium">
+                    Quick Demo Access
+                  </p>
+                  <div className="space-y-2">
+                    {[
+                      { role: 'Student', email: 'student@test.com', password: 'student123' },
+                      { role: 'Faculty', email: 'faculty@test.com', password: 'faculty123' },
+                      { role: 'Admin', email: 'pp@gmail.com', password: 'Youtoyou@1304' }
+                    ].map((cred) => (
+                      <button
+                        key={cred.role}
+                        type="button"
+                        onClick={() => {
+                          setEmail(cred.email);
+                          setPassword(cred.password);
+                        }}
+                        className="w-full p-2.5 rounded-lg border border-gray-200 text-left cursor-pointer"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-gray-700">{cred.role}</p>
+                            <p className="text-xs text-gray-400">{cred.email}</p>
+                          </div>
+                          <span className="text-xs text-gray-400">Click to fill</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
               </form>
             </motion.div>
           </div>
