@@ -29,7 +29,7 @@ const Home = () => {
         navigate("/student");
       }
     } else {
-      navigate("/register");
+      navigate("/login");
     }
   };
 
