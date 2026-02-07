@@ -61,11 +61,10 @@ const CourseDetails = () => {
         } catch (err) {
             console.error("Enrollment error:", err);
             if (err.status === 409) {
-                // Time clash detected - show modal with alternatives
+                // Time clash detected - show modal
                 const errorData = err.data;
                 setClashModal({
-                    clashes: errorData.clashes || [],
-                    alternatives: errorData.alternatives || []
+                    clashes: errorData.clashes || []
                 });
             } else if (err.status === 400 && err.data?.error === "Already registered") {
                 // Already enrolled in this section
@@ -127,10 +126,10 @@ const CourseDetails = () => {
 
                     {message && (
                         <div className={`mb-6 p-4 rounded-xl text-sm font-medium ${message.type === 'success'
-                                ? 'bg-green-50 text-green-700 border border-green-200'
-                                : message.type === 'warning'
-                                    ? 'bg-amber-50 text-amber-700 border border-amber-200'
-                                    : 'bg-red-50 text-red-700 border border-red-200'
+                            ? 'bg-green-50 text-green-700 border border-green-200'
+                            : message.type === 'warning'
+                                ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                                : 'bg-red-50 text-red-700 border border-red-200'
                             }`}>
                             {message.text}
                         </div>
@@ -191,10 +190,10 @@ const CourseDetails = () => {
                 </div>
             )}
 
-            {/* Clash Notification Card */}
+            {/* Clash Notification Modal */}
             {clashModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
                         <div className="p-6 border-b border-gray-100 flex justify-between items-start">
                             <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
@@ -217,74 +216,22 @@ const CourseDetails = () => {
                             </button>
                         </div>
 
-                        <div className="p-6 space-y-6">
-                            {/* Clash Details */}
-                            <div>
-                                <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">Conflicts</h4>
-                                <div className="space-y-3">
-                                    {clashModal.clashes.map((clash, idx) => (
-                                        <div key={idx} className="bg-red-50 border border-red-100 rounded-xl p-4 flex items-start gap-3">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-2"></div>
-                                            <div>
-                                                <p className="font-semibold text-red-900">
-                                                    {clash.courseCode} - {clash.courseTitle}
-                                                </p>
-                                                <p className="text-sm text-red-700 mt-1">
-                                                    {clash.day} at {clash.time}
-                                                </p>
-                                            </div>
+                        <div className="p-6">
+                            <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">Conflicts</h4>
+                            <div className="space-y-3">
+                                {clashModal.clashes.map((clash, idx) => (
+                                    <div key={idx} className="bg-red-50 border border-red-100 rounded-xl p-4 flex items-start gap-3">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-2"></div>
+                                        <div>
+                                            <p className="font-semibold text-red-900">
+                                                {clash.courseCode} - {clash.courseTitle}
+                                            </p>
+                                            <p className="text-sm text-red-700 mt-1">
+                                                {clash.day} at {clash.time}
+                                            </p>
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Alternative Sections */}
-                            <div>
-                                <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">Alternative Sections</h4>
-                                {clashModal.alternatives && clashModal.alternatives.length > 0 ? (
-                                    <div className="space-y-3">
-                                        {clashModal.alternatives.map((alt) => (
-                                            <div key={alt.id} className="bg-emerald-50 border border-emerald-100 rounded-xl p-4">
-                                                <div className="flex justify-between items-start gap-4">
-                                                    <div className="flex-1">
-                                                        <div className="flex items-center gap-2 mb-1">
-                                                            <h5 className="font-bold text-gray-900">
-                                                                Section {alt.sectionCode}
-                                                            </h5>
-                                                            <span className="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-medium">
-                                                                {alt.availableSeats} seats
-                                                            </span>
-                                                        </div>
-                                                        <p className="text-xs text-gray-600 mb-2">Faculty: {alt.facultyName}</p>
-                                                        <div className="space-y-1">
-                                                            {alt.schedules.map((sch, idx) => (
-                                                                <p key={idx} className="text-xs text-gray-700 flex items-center gap-1">
-                                                                    <span className="w-1 h-1 rounded-full bg-gray-400"></span>
-                                                                    {sch.day} {sch.time} ({sch.room})
-                                                                </p>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                    <button
-                                                        onClick={() => {
-                                                            setClashModal(null);
-                                                            handleEnroll(alt.id);
-                                                        }}
-                                                        className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-4 rounded-lg shadow-sm hover:shadow transition-all"
-                                                    >
-                                                        Enroll
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ))}
                                     </div>
-                                ) : (
-                                    <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-center">
-                                        <p className="text-gray-500 text-sm">
-                                            No alternative sections available at this time.
-                                        </p>
-                                    </div>
-                                )}
+                                ))}
                             </div>
                         </div>
                     </div>

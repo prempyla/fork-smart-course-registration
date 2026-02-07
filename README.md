@@ -74,7 +74,6 @@ A modern, full-featured university course registration platform built with the M
 - **Helmet 8.1** - Security middleware
 - **CORS 2.8** - Cross-origin resource sharing
 - **Express Validator 7.3** - Request validation
-- **Express Rate Limit 8.2** - API rate limiting
 
 ---
 
